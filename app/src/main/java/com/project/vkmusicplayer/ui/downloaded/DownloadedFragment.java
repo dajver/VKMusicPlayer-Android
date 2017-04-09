@@ -25,6 +25,7 @@ import com.project.vkmusicplayer.ui.downloaded.controllers.model.RealmModel;
 import com.project.vkmusicplayer.ui.downloaded.player.HybridMediaPlayer;
 
 import java.util.List;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,12 +35,15 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.project.vkmusicplayer.etc.Constants.TYPE_DIRECT;
+import static com.project.vkmusicplayer.etc.Constants.TYPE_RANDOM;
+
 /**
  * Created by gleb on 22.02.17.
  */
 
 public class DownloadedFragment extends BaseFragment implements
-        DownloadedMusicRecycleView.OnItemClickListener, TextWatcher {
+        DownloadedMusicRecycleView.OnItemClickListener, TextWatcher, HybridMediaPlayer.OnCompletionListener {
 
     @BindView(R.id.listView)
     RecyclerView recyclerView;
@@ -61,15 +65,18 @@ public class DownloadedFragment extends BaseFragment implements
     ImageView forward;
     @BindView(R.id.audioName)
     TextView audioName;
+    @BindView(R.id.type)
+    ImageView typeButtom;
     @BindView(R.id.bottomBar)
     LinearLayout bottomBar;
 
     private HybridMediaPlayer mediaPlayer;
     private RealmResults<RealmModel> audioList;
-    private int position;
-    private boolean isPlayed = false;
     private DownloadedMusicRecycleView musicRecycleView;
+    private boolean isPlayed = false;
     private boolean isPlayerShowed = false;
+    private int position;
+    private int type = TYPE_DIRECT;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -77,6 +84,7 @@ public class DownloadedFragment extends BaseFragment implements
         recycleViewSetup(recyclerView);
         recycleViewSetup(recyclerView2);
         mediaPlayer = HybridMediaPlayer.getInstance(context);
+        mediaPlayer.setOnCompletionListener(this);
         search.addTextChangedListener(this);
 
         audioList = new RealmController(context).getAllTracks();
@@ -180,6 +188,17 @@ public class DownloadedFragment extends BaseFragment implements
         }
     }
 
+    @OnClick(R.id.type)
+    public void onTypeClick() {
+        if(type == TYPE_DIRECT) {
+            typeButtom.setImageResource(R.mipmap.randon_icon);
+            type = TYPE_RANDOM;
+        } else {
+            typeButtom.setImageResource(R.mipmap.forward_icon);
+            type = TYPE_DIRECT;
+        }
+    }
+
     @Override
     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
@@ -244,4 +263,34 @@ public class DownloadedFragment extends BaseFragment implements
 
     @Override
     public void afterTextChanged(Editable editable) { }
+
+    @Override
+    public void onCompletion(HybridMediaPlayer player) {
+        if(type == TYPE_DIRECT) {
+            if (position < audioList.size() - 1) {
+                position++;
+                play();
+            } else {
+                play.setImageResource(R.mipmap.stop_icon);
+                isPlayed = true;
+                mediaPlayer.pause();
+            }
+        } else if(type == TYPE_RANDOM) {
+            int min = 0;
+            int max = audioList.size() - 1;
+
+            Random rand = new Random();
+            position = rand.nextInt(max - min + 1) + min;
+            play();
+        }
+    }
+
+    private void play() {
+        mediaPlayer.setDataSource(audioList.get(position).getFilePathUrl());
+        mediaPlayer.prepare();
+        mediaPlayer.play();
+        audioName.setText(audioList.get(position).getTitle());
+
+        musicRecycleView.getHolder().setSelectedItem(position);
+    }
 }
