@@ -1,0 +1,57 @@
+apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
+apply plugin: 'com.github.dcendents.android-maven'
+group='com.github.mkaflowski'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
+    defaultConfig {
+        applicationId "com.project.vkmusicplayer"
+        minSdkVersion 15
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+            storeFile file("/Users/gleb/projects/VKMusicPlayer/key/release.keystore")
+            storePassword "lfqdth"
+            keyAlias "gleb kravchenko"
+            keyPassword "lfqdth"
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+                signingConfig signingConfigs.release
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
+    }
+}
+
+dependencies {
+    compile 'com.android.support:appcompat-v7:25.1.0'
+
+    compile 'com.squareup.retrofit2:retrofit:2.0.1'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'com.squareup.retrofit2:converter-scalars:2.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+
+    compile 'com.vk:androidsdk:1.6.5'
+
+    compile 'com.android.support:recyclerview-v7:25.0.+'
+
+    compile 'com.github.zhaokaiqiang.klog:library:1.5.0'
+    compile 'com.google.android.exoplayer:exoplayer:r2.1.1'
+
+    compile 'com.google.code.gson:gson:2.2.4'
+
+    compile 'io.realm:realm-android:0.87.4'
+}

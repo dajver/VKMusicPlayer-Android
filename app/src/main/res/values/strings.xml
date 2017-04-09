@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">VK Player</string>
+    <integer name="com_vk_sdk_AppId">5949995</integer>
+
+    <string name="toolbar.signin">Auth</string>
+    <string name="toolbar.downloaded">Music</string>
+
+    <string name="edittext.hint">Search...</string>
+
+    <string name="downloaded.title1">- Downloaded</string>
+    <string name="downloaded.title2">- Search</string>
+</resources>
