@@ -14,20 +14,10 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
-    signingConfigs {
+    buildTypes {
         release {
-            storeFile file("/Users/gleb/projects/VKMusicPlayer/key/release.keystore")
-            storePassword "lfqdth"
-            keyAlias "gleb kravchenko"
-            keyPassword "lfqdth"
-        }
-
-        buildTypes {
-            release {
-                minifyEnabled false
-                signingConfig signingConfigs.release
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
