@@ -74,38 +74,32 @@ public class DownloadedMusicRecycleView extends RecyclerView.Adapter<DownloadedM
             super(itemView);
             ButterKnife.bind(this, itemView);
             viewHolders2.add(this);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = DownloadedMusicRecycleView.ViewHolder.super.getAdapterPosition();
-                    if (viewHolders.size() > 0) {
-                        viewHolders.get(0).indicator.setVisibility(View.GONE);
-                        viewHolders.remove(0);
-                        for(int i = 0; i < viewHolders2.size(); i++) {
-                            if (viewHolders2.size() > 0) {
-                                viewHolders2.get(i).indicator.setVisibility(View.GONE);
-                            }
+            itemView.setOnClickListener(view -> {
+                int position = ViewHolder.super.getAdapterPosition();
+                if (viewHolders.size() > 0) {
+                    viewHolders.get(0).indicator.setVisibility(View.GONE);
+                    viewHolders.remove(0);
+                    for(int i = 0; i < viewHolders2.size(); i++) {
+                        if (viewHolders2.size() > 0) {
+                            viewHolders2.get(i).indicator.setVisibility(View.GONE);
                         }
                     }
-                    if (isClicked) {
-                        indicator.setVisibility(View.GONE);
-                        onItemClickListener.onItemStopClick();
-                        isClicked = false;
-                    } else {
-                        indicator.setVisibility(View.VISIBLE);
-                        onItemClickListener.onItemClick(position, realmModels.get(position).getFilePathUrl());
-                        isClicked = true;
-                    }
-                    viewHolders.add(DownloadedMusicRecycleView.ViewHolder.this);
                 }
+                if (isClicked) {
+                    indicator.setVisibility(View.GONE);
+                    onItemClickListener.onItemStopClick();
+                    isClicked = false;
+                } else {
+                    indicator.setVisibility(View.VISIBLE);
+                    onItemClickListener.onItemClick(position, realmModels.get(position).getFilePathUrl());
+                    isClicked = true;
+                }
+                viewHolders.add(ViewHolder.this);
             });
-            remove.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int position = DownloadedMusicRecycleView.ViewHolder.super.getAdapterPosition();
-                    new RealmController(context).removeFavorite(realmModels.get(position).getId());
-                    DownloadedMusicRecycleView.super.notifyItemRemoved(position);
-                }
+            remove.setOnClickListener(view -> {
+                int position = ViewHolder.super.getAdapterPosition();
+                new RealmController(context).removeFavorite(realmModels.get(position).getId());
+                notifyItemRemoved(position);
             });
         }
 
